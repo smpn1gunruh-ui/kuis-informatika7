@@ -1,111 +1,65 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Kuis Informatika Kelas 7 - SMPN 1 Gunungguruh</title>
 <style>
-  body {
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #004aad, #0099ff);
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    margin: 0;
-  }
-  .container {
-    background: rgba(255,255,255,0.1);
-    border: 2px solid #ffcc00;
-    border-radius: 20px;
-    padding: 30px;
-    width: 90%;
-    max-width: 650px;
-    text-align: center;
-    box-shadow: 0 0 25px rgba(0,0,0,0.3);
-  }
-  button {
-    background: #ffcc00;
-    color: #004aad;
-    border: none;
-    border-radius: 12px;
-    padding: 10px 20px;
-    margin: 10px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
-    transition: 0.2s;
-  }
-  button:hover { background: #004aad; color: #ffcc00; }
-  .hide { display: none; }
-  h1, h2 { margin-bottom: 20px; color: #ffcc00; }
-  #timer {
-    font-size: 20px;
-    font-weight: bold;
-    background: rgba(0,0,0,0.3);
-    padding: 10px;
-    border-radius: 12px;
-    margin-bottom: 10px;
-  }
-  table {
-    width: 100%;
-    color: white;
-    border-collapse: collapse;
-  }
-  th, td {
-    padding: 8px;
-    border-bottom: 1px solid rgba(255,255,255,0.3);
-  }
-  input {
-    padding: 10px;
-    border-radius: 10px;
-    border: none;
-    width: 80%;
-    max-width: 300px;
-    text-align: center;
-  }
+  body{font-family:Arial, Helvetica, sans-serif; background:linear-gradient(135deg,#004aad,#0099ff); color:#fff; display:flex; align-items:center; justify-content:center; min-height:100vh; margin:0;}
+  .card{background:rgba(255,255,255,0.06); border:2px solid #ffcc00; border-radius:14px; padding:24px; width:95%; max-width:720px; text-align:center; box-shadow:0 8px 30px rgba(0,0,0,0.25);}
+  h1,h2{margin:8px 0; color:#ffcc00;}
+  input{padding:10px 12px; border-radius:8px; border:none; width:80%; max-width:320px; text-align:center; margin-bottom:10px;}
+  button{background:#ffcc00;color:#004aad;border:none;border-radius:10px;padding:10px 16px;margin:8px;font-weight:700;cursor:pointer;}
+  button:hover{background:#004aad;color:#ffcc00;}
+  #timer{font-weight:700;margin-bottom:8px;background:rgba(0,0,0,0.2);display:inline-block;padding:6px 10px;border-radius:10px;}
+  #options button{display:block;width:100%;margin:8px 0;padding:10px;border-radius:10px;border:none;background:#fff;color:#004aad;font-weight:600;cursor:pointer;}
+  #options button:disabled{opacity:0.7;cursor:default;}
+  table{width:100%;color:#fff;border-collapse:collapse;margin-top:12px;}
+  th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.12); text-align:left;}
+  .small{font-size:0.9rem;color:#e6f3ff;}
 </style>
 </head>
 <body>
-
-<div class="container">
+<div class="card">
   <h1>🏫 SMPN 1 GUNUNGGURUH</h1>
   <h2>Kuis Informatika Kelas 7</h2>
 
   <div id="start-container">
-    <input type="text" id="player-name" placeholder="Masukkan Nama Kamu">
+    <input id="player-name" placeholder="Masukkan Nama Kamu (cth: Budi A)" />
     <br>
-    <button onclick="startQuiz()">Mulai Kuis</button>
+    <button id="start-btn">Mulai Kuis</button>
+    <p class="small">Versi online: hasil akan tersimpan ke Google Sheet guru.</p>
   </div>
 
-  <div id="quiz-container" class="hide">
-    <div id="timer">⏱️ Waktu: <span id="time-left">5</span> detik</div>
+  <div id="quiz-container" style="display:none;">
+    <div id="timer">⏱️ Waktu: <span id="time-left">10</span> detik</div>
     <h2 id="question"></h2>
     <div id="options"></div>
-    <button id="next-btn" class="hide">Selanjutnya</button>
+    <button id="next-btn" style="display:none;">Selanjutnya</button>
   </div>
 
-  <div id="score-container" class="hide">
+  <div id="score-container" style="display:none;">
     <h2>Skor Akhir Kamu:</h2>
     <h1 id="score"></h1>
-    <button onclick="saveScore()">Simpan Skor</button>
+    <button id="save-btn">Simpan & Kirim Hasil</button>
   </div>
 
-  <div id="leaderboard-container" class="hide">
-    <h2>🏆 Leaderboard</h2>
-    <table id="leaderboard-table">
-      <thead><tr><th>Nama</th><th>Skor</th></tr></thead>
-      <tbody></tbody>
-    </table>
-    <button onclick="playAgain()">Main Lagi</button>
-  </div>
+  <div id="status" class="small" style="margin-top:10px;display:none;"></div>
 </div>
 
 <script>
+/* ============================
+  Ganti BARIS di bawah ini:
+  masukkan URL Web App Google Apps Script (yang akan dibuat)
+  contoh: const WEB_APP_URL = "https://script.google.com/macros/s/AKfyc.../exec";
+   ============================ */
+const WEB_APP_URL = "WEB_APP_URL_PASTE_DISINI";
+
+/* ======= DATA SOAL (30 soal) =======
+   (sama seperti versi sebelumnya; 6 soal per bab)
+*/
 let questions = [
-  // ===== BAB 1 =====
+  // Bab1 (6)
   {q:"Apa yang dimaksud dengan Informatika?", options:["Ilmu tentang komputer dan pemrograman","Ilmu tentang biologi","Ilmu tentang sejarah","Ilmu tentang fisika"], answer:0},
   {q:"Komputasi berarti...", options:["Proses berpikir logis dan sistematis","Menulis laporan","Menggambar","Bermain game"], answer:0},
   {q:"Contoh penerapan informatika di sekolah adalah...", options:["E-learning","Olahraga","Musik","Menari"], answer:0},
@@ -113,7 +67,7 @@ let questions = [
   {q:"Tujuan belajar informatika adalah...", options:["Memecahkan masalah menggunakan teknologi","Menambah berat badan","Membuat karya seni","Menghafal teori"], answer:0},
   {q:"Istilah 'informasi' berasal dari kata...", options:["Informare","Informatic","Informatum","Infotech"], answer:0},
 
-  // ===== BAB 2 =====
+  // Bab2 (6)
   {q:"Algoritma adalah...", options:["Langkah-langkah menyelesaikan masalah","Bahasa pemrograman","Aplikasi","Hardware"], answer:0},
   {q:"Contoh algoritma sehari-hari adalah...", options:["Langkah membuat kopi","Menonton TV","Tidur","Bermain bola"], answer:0},
   {q:"Flowchart digunakan untuk...", options:["Menggambarkan urutan langkah algoritma","Menyimpan data","Mengedit gambar","Menjalankan program"], answer:0},
@@ -121,7 +75,7 @@ let questions = [
   {q:"Bahasa pemrograman tingkat tinggi contohnya...", options:["Python","Mesin","Biner","Assembly"], answer:0},
   {q:"Proses menulis dan menjalankan program disebut...", options:["Coding","Debugging","Drawing","Recording"], answer:0},
 
-  // ===== BAB 3 =====
+  // Bab3 (6)
   {q:"CPU berfungsi untuk...", options:["Mengolah data","Menyimpan data","Menampilkan gambar","Menyambung internet"], answer:0},
   {q:"RAM termasuk perangkat...", options:["Penyimpanan sementara","Output","Input","Jaringan"], answer:0},
   {q:"Perangkat output adalah...", options:["Monitor","Keyboard","Mouse","Scanner"], answer:0},
@@ -129,7 +83,7 @@ let questions = [
   {q:"Contoh perangkat input adalah...", options:["Keyboard","Speaker","Monitor","Printer"], answer:0},
   {q:"Bagian komputer yang menampilkan hasil kerja disebut...", options:["Output device","Input device","Storage","Motherboard"], answer:0},
 
-  // ===== BAB 4 =====
+  // Bab4 (6)
   {q:"Internet adalah...", options:["Jaringan komputer global","Bahasa pemrograman","Game online","Aplikasi chatting"], answer:0},
   {q:"WWW kepanjangan dari...", options:["World Wide Web","Wide Web World","World Web Wide","Web World Wide"], answer:0},
   {q:"Alamat situs web disebut...", options:["URL","PDF","CPU","LAN"], answer:0},
@@ -137,135 +91,166 @@ let questions = [
   {q:"Jaringan lokal di rumah disebut...", options:["LAN","WAN","MAN","PAN"], answer:0},
   {q:"Fungsi router adalah...", options:["Mengatur lalu lintas data di jaringan","Menampilkan video","Mengetik teks","Mencetak dokumen"], answer:0},
 
-  // ===== BAB 5 =====
+  // Bab5 (6)
   {q:"Etika digital berarti...", options:["Perilaku baik dalam menggunakan teknologi","Mengetik cepat","Membuat program","Mendesain poster"], answer:0},
   {q:"Contoh dampak negatif internet adalah...", options:["Penyebaran hoaks","Belajar online","Komunikasi cepat","Akses ilmu"], answer:0},
   {q:"Cyberbullying adalah...", options:["Perundungan melalui internet","Belajar daring","Kegiatan coding","Membuat vlog"], answer:0},
   {q:"Salah satu dampak positif informatika adalah...", options:["Mempermudah komunikasi","Menambah polusi","Menghambat informasi","Mengurangi kerja sama"], answer:0},
   {q:"Jejak digital artinya...", options:["Rekam data aktivitas pengguna di internet","Jejak kaki di komputer","Virus komputer","Sinyal WiFi"], answer:0},
-  {q:"Cara menghindari penipuan online adalah...", options:["Jangan membagikan data pribadi","Klik semua tautan","Masukkan password ke sembarang situs","Gunakan WiFi publik bebas"], answer:0},
+  {q:"Cara menghindari penipuan online adalah...", options:["Jangan membagikan data pribadi","Klik semua tautan","Masukkan password ke sembarang situs","Gunakan WiFi publik bebas"], answer:0}
 ];
 
-let currentQuestion = 0;
+let shuffledQuestions = [];
+let currentQuestionIndex = 0;
 let score = 0;
-let timeLeft = 10;
-let timer;
-let playerName = "";
+let timer, timeLeft = 10;
+let startTime = null;
 
-const questionElement = document.getElementById("question");
-const optionsElement = document.getElementById("options");
-const nextBtn = document.getElementById("next-btn");
-const scoreContainer = document.getElementById("score-container");
-const scoreElement = document.getElementById("score");
-const quizContainer = document.getElementById("quiz-container");
-const startContainer = document.getElementById("start-container");
-const leaderboardContainer = document.getElementById("leaderboard-container");
-const leaderboardTable = document.getElementById("leaderboard-table").querySelector("tbody");
-const timerDisplay = document.getElementById("time-left");
+const startBtn = document.getElementById('start-btn');
+const startContainer = document.getElementById('start-container');
+const quizContainer = document.getElementById('quiz-container');
+const scoreContainer = document.getElementById('score-container');
+const questionEl = document.getElementById('question');
+const optionsEl = document.getElementById('options');
+const nextBtn = document.getElementById('next-btn');
+const timeLeftEl = document.getElementById('time-left');
+const scoreText = document.getElementById('score');
+const saveBtn = document.getElementById('save-btn');
+const status = document.getElementById('status');
 
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-}
+function shuffleArray(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
 
-function startQuiz() {
-  playerName = document.getElementById("player-name").value.trim();
-  if (!playerName) { alert("Masukkan nama terlebih dahulu!"); return; }
-  shuffleArray(questions);
-  startContainer.classList.add("hide");
-  leaderboardContainer.classList.add("hide");
-  scoreContainer.classList.add("hide");
-  quizContainer.classList.remove("hide");
-  currentQuestion = 0;
+startBtn.addEventListener('click', () => {
+  const name = document.getElementById('player-name').value.trim();
+  if(!name){ alert('Masukkan nama dulu!'); return; }
+  // Prepare questions
+  shuffledQuestions = shuffleArray(questions.slice());
+  startContainer.style.display='none';
+  quizContainer.style.display='block';
+  currentQuestionIndex = 0;
   score = 0;
+  startTime = Date.now();
   showQuestion();
   startTimer();
-}
+});
 
-function startTimer() {
+function startTimer(){
   clearInterval(timer);
-  timeLeft = 5;
-  timerDisplay.textContent = timeLeft;
+  timeLeft = 10;
+  timeLeftEl.textContent = timeLeft;
   timer = setInterval(() => {
     timeLeft--;
-    timerDisplay.textContent = timeLeft;
-    if (timeLeft <= 0) { clearInterval(timer); nextQuestion(); }
-  }, 1000);
+    timeLeftEl.textContent = timeLeft;
+    if(timeLeft<=0){
+      clearInterval(timer);
+      autoProceed();
+    }
+  },1000);
 }
 
-function showQuestion() {
-  nextBtn.classList.add("hide");
-  const question = questions[currentQuestion];
-  questionElement.textContent = `${currentQuestion + 1}. ${question.q}`;
-  let shuffledOptions = question.options.map((opt, i) => ({text: opt, index: i}));
-  shuffleArray(shuffledOptions);
-  optionsElement.innerHTML = "";
-  shuffledOptions.forEach(opt => {
-    const button = document.createElement("button");
-    button.textContent = opt.text;
-    button.onclick = (event) => selectAnswer(opt.index, event);
-    optionsElement.appendChild(button);
+function showQuestion(){
+  nextBtn.style.display='none';
+  const q = shuffledQuestions[currentQuestionIndex];
+  questionEl.textContent = `${currentQuestionIndex+1}. ${q.q}`;
+  // shuffle options
+  let mapped = q.options.map((t,i)=>({t,i}));
+  mapped = shuffleArray(mapped);
+  optionsEl.innerHTML = '';
+  mapped.forEach(item=>{
+    const btn = document.createElement('button');
+    btn.textContent = item.t;
+    btn.onclick = (ev)=>selectAnswer(item.i, ev);
+    optionsEl.appendChild(btn);
   });
 }
 
-function selectAnswer(index, event) {
+function selectAnswer(index, ev){
   clearInterval(timer);
-  const question = questions[currentQuestion];
-  const buttons = optionsElement.querySelectorAll("button");
-  buttons.forEach(btn => btn.disabled = true);
-  if (index === question.answer) {
+  const q = shuffledQuestions[currentQuestionIndex];
+  const buttons = optionsEl.querySelectorAll('button');
+  buttons.forEach(b=>b.disabled=true);
+  if(index === q.answer){
     score++;
-    event.target.style.background = "#00ff7f";
+    ev.target.style.background='#00ff7f';
   } else {
-    event.target.style.background = "#ff4d4d";
-    buttons.forEach(btn => {
-      if (btn.textContent === question.options[question.answer]) btn.style.background = "#00ff7f";
+    ev.target.style.background='#ff4d4d';
+    // highlight correct
+    buttons.forEach(b=>{
+      if(b.textContent === q.options[q.answer]) b.style.background='#00ff7f';
     });
   }
-  nextBtn.classList.remove("hide");
+  nextBtn.style.display='inline-block';
 }
 
-nextBtn.onclick = nextQuestion;
+nextBtn.addEventListener('click', () => {
+  currentQuestionIndex++;
+  if(currentQuestionIndex < shuffledQuestions.length){
+    showQuestion();
+    startTimer();
+  } else {
+    finishQuiz();
+  }
+});
 
-function nextQuestion() {
-  currentQuestion++;
-  if (currentQuestion < questions.length) { showQuestion(); startTimer(); }
-  else { showScore(); }
-}
-
-function showScore() {
-  quizContainer.classList.add("hide");
-  scoreContainer.classList.remove("hide");
-  scoreElement.textContent = `${score} dari ${questions.length}`;
-}
-
-function saveScore() {
-  let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
-  leaderboard.push({ name: playerName, score: score });
-  leaderboard.sort((a, b) => b.score - a.score);
-  localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
-  showLeaderboard();
-}
-
-function showLeaderboard() {
-  scoreContainer.classList.add("hide");
-  leaderboardContainer.classList.remove("hide");
-  leaderboardTable.innerHTML = "";
-  let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
-  leaderboard.slice(0, 10).forEach((entry, index) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `<td>${index + 1}. ${entry.name}</td><td>${entry.score}</td>`;
-    leaderboardTable.appendChild(row);
+function autoProceed(){
+  // user didn't answer in time — mark none and go next
+  const buttons = optionsEl.querySelectorAll('button');
+  buttons.forEach(b=>b.disabled=true);
+  // highlight correct
+  const q = shuffledQuestions[currentQuestionIndex];
+  buttons.forEach(b=>{
+    if(b.textContent === q.options[q.answer]) b.style.background='#00ff7f';
   });
+  nextBtn.style.display='inline-block';
 }
 
-function playAgain() {
-  startContainer.classList.remove("hide");
-  leaderboardContainer.classList.add("hide");
+function finishQuiz(){
+  clearInterval(timer);
+  quizContainer.style.display='none';
+  scoreContainer.style.display='block';
+  scoreText.textContent = `${score} dari ${shuffledQuestions.length}`;
 }
+
+saveBtn.addEventListener('click', () => {
+  const name = document.getElementById('player-name').value.trim();
+  const total = shuffledQuestions.length;
+  const durationSeconds = Math.round((Date.now()-startTime)/1000);
+  const payload = { name: name, score: score, total: total, duration: durationSeconds, timestamp: new Date().toISOString() };
+
+  // Try sending normally (CORS usually fine when Web App is deployed "Anyone, even anonymous")
+  status.style.display='block';
+  status.textContent='Mengirim hasil...';
+
+  fetch(WEB_APP_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(resp => {
+    if(!resp.ok) throw new Error('Tidak ok');
+    return resp.json();
+  })
+  .then(data => {
+    status.textContent = 'Berhasil dikirim ke Google Sheets ✅';
+    // optionally disable save button
+    saveBtn.disabled = true;
+  })
+  .catch(err => {
+    console.warn('Fetch error:', err);
+    // fallback: try send using no-cors (data will be sent but response not readable)
+    fetch(WEB_APP_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(()=>{
+      status.textContent = 'Hasil dikirim (mode no-cors). Jika tidak ada di Sheets, cek pengaturan Web App.';
+      saveBtn.disabled = true;
+    }).catch(e=>{
+      status.textContent = 'Gagal mengirim hasil. Cek koneksi atau URL Web App.';
+    });
+  });
+});
 </script>
-
 </body>
 </html>
